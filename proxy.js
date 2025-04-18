@@ -13,7 +13,7 @@ app.use('/', (req, res) => {
 websocket.createServer({ server, path: '/mqtt' }, (stream) => {
     const client = mqtt.connect('wss://io.adafruit.com:443/mqtt', {
         username: 'leduccuongks0601',
-        password: 'aio_hTdG96DUzZv0HHe37zA7XIANSlM9', // AIO Key chắc chắn đúng của chị
+        password: 'aio_ahYG19od0kE9mpAQJBwsfOPl7Oyx', // AIO Key chắc chắn đúng của chị
         clientId: 'proxy_' + Math.random().toString(16).substring(2, 8),
         clean: true,
         protocolVersion: 4
