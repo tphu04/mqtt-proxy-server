@@ -37,27 +37,11 @@ mqttClient.on('error', (err) => {
 websocket.createServer({ server, path: '/mqtt' }, (stream) => {
     console.log('🌐 BE vừa kết nối tới Proxy');
 
-    // Tạo một cặp stream ảo để tách riêng kết nối cho từng client
-    const clientToBroker = new Duplex({
-        write(chunk, encoding, callback) {
-            mqttClient.stream.write(chunk, encoding, callback);
-        },
-        read(size) {
-            // Để trống vì ta đẩy data từ mqttClient ngược lại
-        }
-    });
+    // Pipe từ BE đến Adafruit
+    stream.pipe(mqttClient.stream, { end: false });
 
-    mqttClient.stream.on('data', (chunk) => {
-        try {
-            stream.write(chunk);
-        } catch (err) {
-            console.error('❌ Lỗi ghi dữ liệu vào BE:', err.message);
-        }
-    });
-
-    stream.on('data', (chunk) => {
-        clientToBroker.write(chunk);
-    });
+    // Pipe ngược lại từ Adafruit về BE
+    mqttClient.stream.pipe(stream, { end: false });
 
     stream.on('close', () => {
         console.warn('🔌 BE đã đóng kết nối WebSocket');
