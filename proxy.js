@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const websocket = require('websocket-stream');
@@ -13,8 +14,8 @@ app.use('/', (req, res) => {
 websocket.createServer({ server, path: '/mqtt' }, (stream) => {
     try {
         const client = mqtt.connect('wss://io.adafruit.com:443/mqtt', {
-            username: 'leduccuongks0601',
-            password: 'aio_yWsP58sLGgOeO1nomRIexg7QyRZ1',
+            username: process.env.ADAFRUIT_USERNAME,
+            password: process.env.ADAFRUIT_KEY,
             clientId: 'proxy_' + Date.now() + '_' + Math.random().toString(16).slice(2, 6),
             clean: true,
             protocolVersion: 4
