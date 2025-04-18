@@ -11,23 +11,29 @@ app.use('/', (req, res) => {
 });
 
 websocket.createServer({ server, path: '/mqtt' }, (stream) => {
-    const client = mqtt.connect('wss://io.adafruit.com:443/mqtt', {
-        username: 'leduccuongks0601',
-        password: 'aio_ahYG19od0kE9mpAQJBwsfOPl7Oyx', // AIO Key chắc chắn đúng của chị
-        clientId: 'proxy_' + Math.random().toString(16).substring(2, 8),
-        clean: true,
-        protocolVersion: 4
-    });
+    try {
+        const client = mqtt.connect('wss://io.adafruit.com:443/mqtt', {
+            username: 'leduccuongks0601',
+            password: 'aio_yWsP58sLGgOeO1nomRIexg7QyRZ1',
+            clientId: 'proxy_' + Date.now() + '_' + Math.random().toString(16).slice(2, 6),
+            clean: true,
+            protocolVersion: 4
+        });
 
-    client.on('connect', () => {
-        console.log('✅ Proxy đã kết nối tới Adafruit IO!');
-        stream.pipe(client.stream).pipe(stream);
-    });
+        client.on('connect', () => {
+            console.log('✅ Proxy đã kết nối tới Adafruit IO!');
+            stream.pipe(client.stream).pipe(stream);
+        });
 
-    client.on('error', (err) => {
-        console.error('❌ Proxy lỗi:', err.message);
-        console.error(err); // <- In cả object để thấy rõ lý do
-    });
+        client.on('error', (err) => {
+            console.error('❌ Proxy lỗi:', err.message);
+            console.error(err); // <- In cả object để thấy rõ lý do
+        });
+    } catch (err) {
+        console.error('❌ Không thể khởi tạo MQTT:', err.message);
+    }
+
+
 
 });
 
